@@ -12,7 +12,7 @@ This Master's Thesis aims to identify epigenetically regulated genes in plant-vi
   - FastQC  
   - Trim Galore  
   - MultiQC  
-  - ShortStack  
+  - Hisat2  
   - Samtools  
   - IGV  
   - featureCounts  
