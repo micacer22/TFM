@@ -1,4 +1,5 @@
 #!/bin/bash
+SBATCH --mem=32G
 
 # Lista de archivos BAM
 bam_files=(
