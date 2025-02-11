@@ -19,23 +19,13 @@ This Master's Thesis aims to identify epigenetically regulated genes in plant-vi
 
 ## **Usage Instructions**  
 
-### **1. Download Data**  
-Run the script to download sRNA sequencing data from GEO/SRA:  
+### **1. Quality Control and Preprocessing and Sequence Alignment**  
+Run the script:  
 ```bash
-bash scripts/Download_script_sRNAs.sh
+bash scripts/calidad.sh
 ```
 
-### **2. Quality Control and Preprocessing**  
-```bash
-bash scripts/data_preprocessing.sh
-```
-
-### **3. Sequence Alignment**  
-```bash
-bash scripts/alignment_sRNAs.sh
-```
-
-### **4. Differential Expression Analysis**    
+### **2. Differential Expression Analysis**    
 ```bash
 bash scripts/featureCounts_sRNAs.sh
 ```
