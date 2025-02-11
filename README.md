@@ -34,9 +34,8 @@ bash scripts/featureCounts_sRNAs.sh
 Load the BAM files into IGV to explore expression patterns.  
 
 ## **Expected Results**  
-- Identification of differentially expressed sRNAs in epigenetic mutants.  
-- Analysis of the relationship between TEs and virus-responsive genes.  
-- Integration of methylation and expression data.  
+The project identified key genes that are epigenetically regulated and play a significant role in the plant response to viral infections. 
+Transposable elements are also anticipated to be involved in the modulation of these genes, providing new insights into plant defense mechanisms.  
 
 ## **Authors and Credits**  
 This project was developed by **Miriam Caballero Cerveró**, in collaboration with the *Epigenetic Complexes in Plant Immunity* group at I2SysBio.  
