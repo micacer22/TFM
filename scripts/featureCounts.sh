@@ -13,7 +13,7 @@ bam_files=(
 )
 
 # Archivo de anotaciones
-annotation="/home/cacermi/miriam/2024/InSilico/proyecto_epigenetica/Data/SRR/combined_output/Annotations"
+annotation="/home/cacermi/miriam/2024/InSilico/proyecto_epigenetica/Data/SRR/combined_output/Annotations/atRTD3_TS_21Feb22_transfix.gtf"
 
 # Lista de genes de interés
 genes=("AT2G31650" "AT1G77300" "AT2G23380") # ATX1, SDG8, CLF
