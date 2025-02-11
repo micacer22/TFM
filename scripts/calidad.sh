@@ -1,11 +1,11 @@
 #!/bin/bash
-#SBATCH --job-name=hisat2_alignment
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=8
-#SBATCH --mem=32G
-#SBATCH --time=48:00:00
-#SBATCH --partition=global  
-#SBATCH --qos=medium                   
+SBATCH --job-name=hisat2_alignment
+SBATCH --ntasks=1
+SBATCH --cpus-per-task=8
+SBATCH --mem=32G
+SBATCH --time=48:00:00
+SBATCH --partition=global  
+SBATCH --qos=medium                   
 
 # Ruta de trabajo principal
 wdir="/home/cacermi/miriam/2024/TFM/Data/X204SC24104429-Z01-F001/"
@@ -21,7 +21,7 @@ virus_stats_dir="$wdir/6_virus_stats"
 tuvm_genome="/home/cacermi/miriam/2024/TFM/Data/X204SC24104429-Z01-F001/TuMV_Anc.fa"
 
 # Directorios de salida
-#mkdir -p $raw_dir $trimmed_dir $qc_dir $multiqc_dir $hisat2_dir $stats_dir $virus_stats_dir
+mkdir -p $raw_dir $trimmed_dir $qc_dir $multiqc_dir $hisat2_dir $stats_dir $virus_stats_dir
 
 # Lista de bibliotecas
 libs=("SI1_FKRN240341962-1A_22JCNWLT4_L1"
@@ -104,185 +104,184 @@ libs=("SI1_FKRN240341962-1A_22JCNWLT4_L1"
       "SM3_FKRN240341961-1A_22JCNWLT4_L4")
 
 # 1: Verificación de calidad con FastQC
-#echo "Ejecutando FastQC..."
-#for lib in "${libs[@]}"; do
+echo "Ejecutando FastQC..."
+for lib in "${libs[@]}"; do
     # Determinar la carpeta 
-#    folder=$(echo "$lib" | cut -d'_' -f1)
+    folder=$(echo "$lib" | cut -d'_' -f1)
 
-#    echo "Verificando calidad para $lib en carpeta $folder"
-#    fastqc -o $qc_dir "$raw_dir/$folder/${lib}_1.fq.gz" "$raw_dir/$folder/${lib}_2.fq.gz"
-#done
+    echo "Verificando calidad para $lib en carpeta $folder"
+    fastqc -o $qc_dir "$raw_dir/$folder/${lib}_1.fq.gz" "$raw_dir/$folder/${lib}_2.fq.gz"
+done
 
 
-# 2: Cortar secuencias con Trim Galore
-#echo "Ejecutando Trim Galore..."
-#for lib in "${libs[@]}"; do
- #   folder=$(echo "$lib" | cut -d'_' -f1)
+ 2: Cortar secuencias con Trim Galore
+echo "Ejecutando Trim Galore..."
+for lib in "${libs[@]}"; do
+    folder=$(echo "$lib" | cut -d'_' -f1)
 
     # Crear la carpeta salida de trimmed
-  #  mkdir -p "$trimmed_dir/$folder"
+    mkdir -p "$trimmed_dir/$folder"
 
     # Recortar las bases con una calidad menor a 20, eliminar primers y recortar los primeros 10 nt
-   # echo "Recortando secuencias para $lib en carpeta $folder con calidad menor a 20"
-   # trim_galore --paired \
-    #    --quality 20 \
-     #   --fastqc \
-      #  --stringency 1 \
-       # --clip_R1 10 --clip_R2 10 \
-      #  --output_dir "$trimmed_dir/$folder" \
-      #  "$raw_dir/$folder/${lib}_1.fq.gz" "$raw_dir/$folder/${lib}_2.fq.gz"
-#done
+    echo "Recortando secuencias para $lib en carpeta $folder con calidad menor a 20"
+    trim_galore --paired \
+        --quality 20 \
+        --fastqc \
+        --stringency 1 \
+        --clip_R1 10 --clip_R2 10 \
+        --output_dir "$trimmed_dir/$folder" \
+        "$raw_dir/$folder/${lib}_1.fq.gz" "$raw_dir/$folder/${lib}_2.fq.gz"
+done
 
 # 3: Generación de informe MultiQC
-#echo "Ejecutando MultiQC..."
-#multiqc $trimmed_dir -o $multiqc_dir
-#echo "Resultados de MultiQC disponibles en: $multiqc_dir"
+echo "Ejecutando MultiQC..."
+multiqc $trimmed_dir -o $multiqc_dir
+echo "Resultados de MultiQC disponibles en: $multiqc_dir"
 
-# 4: Preparación de las referencias(Arabidopsis thaliana y TuMV)
+ 4: Preparación de las referencias(Arabidopsis thaliana y TuMV)
 
 # Descargar el genoma de Arabidopsis thaliana
-#echo "Descargando el genoma de Arabidopsis thaliana..."
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.1.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.2.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.3.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.4.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.5.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.Mt.fa.gz
-#wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.Pt.fa.gz
+echo "Descargando el genoma de Arabidopsis thaliana..."
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.1.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.2.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.3.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.4.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.5.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.Mt.fa.gz
+wget -q -P $wdir https://ftp.ensemblgenomes.ebi.ac.uk/pub/plants/release-60/fasta/arabidopsis_thaliana/dna/Arabidopsis_thaliana.TAIR10.dna.chromosome.Pt.fa.gz
 
 # Descomprimir los archivos del genoma
-#echo "Descomprimiendo los archivos del genoma de Arabidopsis..."
-#gunzip $wdir*.fa.gz
+echo "Descomprimiendo los archivos del genoma de Arabidopsis..."
+gunzip $wdir*.fa.gz
 
 # Concatenar los cromosomas de Arabidopsis thaliana
-#echo "Concatenando los cromosomas de Arabidopsis thaliana..."
-#if ls $wdir/Arabidopsis_thaliana.TAIR10.dna.chromosome.*.fa 1> /dev/null 2>&1; then
- #   cat $wdir/Arabidopsis_thaliana.TAIR10.dna.chromosome.*.fa > $wdir/Ath_R60.fa
-#else
- #   echo "Error: No se encontraron los cromosomas descargados."
-  #  exit 1
-#fi
+echo "Concatenando los cromosomas de Arabidopsis thaliana..."
+if ls $wdir/Arabidopsis_thaliana.TAIR10.dna.chromosome.*.fa 1> /dev/null 2>&1; then
+    cat $wdir/Arabidopsis_thaliana.TAIR10.dna.chromosome.*.fa > $wdir/Ath_R60.fa
+else
+    echo "Error: No se encontraron los cromosomas descargados."
+    exit 1
+fi
 
 
 # 5: Indexación de los genomas con HISAT2
-#echo "Indexando el genoma de Arabidopsis thaliana..."
-#hisat2-build $wdir/Ath_R60.fa $hisat2_dir/Ath_R60
+echo "Indexando el genoma de Arabidopsis thaliana..."
+hisat2-build $wdir/Ath_R60.fa $hisat2_dir/Ath_R60
 
-#echo "Indexando el genoma de TuMV..."
-#hisat2-build $tuvm_genome $hisat2_dir/TuMV_genome
+echo "Indexando el genoma de TuMV..."
+hisat2-build $tuvm_genome $hisat2_dir/TuMV_genome
 
 # 6: Mapeo de las lecturas con HISAT2
 
 # Mapeo para Arabidopsis thaliana
-#echo "Mapeando las lecturas a Arabidopsis thaliana..."
-#for lib in "${libs[@]}"; do
- #   folder=$(echo "$lib" | cut -d'_' -f1)
+echo "Mapeando las lecturas a Arabidopsis thaliana..."
+for lib in "${libs[@]}"; do
+    folder=$(echo "$lib" | cut -d'_' -f1)
 
- #   if [[ -f "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" && -f "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" ]]; then
-  #      echo "Mapeando $lib desde carpeta $folder"
+    if [[ -f "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" && -f "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" ]]; then
+        echo "Mapeando $lib desde carpeta $folder"
         
         # Ejecutar hisat2 con el número de hilos especificado
- #       hisat2 -x $hisat2_dir/Ath_R56 \
- #              -1 "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" \
-  #             -2 "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" \
-   #            -S "$hisat2_dir/${lib}_Ath_R60.sam" \
-   #            -p 8
+        hisat2 -x $hisat2_dir/Ath_R56 \
+               -1 "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" \
+               -2 "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" \
+               -S "$hisat2_dir/${lib}_Ath_R60.sam" \
+               -p 8
 
         # Convertir SAM a BAM con samtools
-  #      echo "Convirtiendo archivo SAM a BAM..."
-   #     samtools view -bS "$hisat2_dir/${lib}_Ath_R60.sam" > "$hisat2_dir/${lib}_Ath_R60.unsorted.bam"
+        echo "Convirtiendo archivo SAM a BAM..."
+        samtools view -bS "$hisat2_dir/${lib}_Ath_R60.sam" > "$hisat2_dir/${lib}_Ath_R60.unsorted.bam"
 
         # Ordenar archivo BAM
-    #    echo "Ordenando archivo BAM..."
-     #   samtools sort "$hisat2_dir/${lib}_Ath_R60.unsorted.bam" -o "$hisat2_dir/${lib}_Ath_R60.sorted.bam"
+        echo "Ordenando archivo BAM..."
+        samtools sort "$hisat2_dir/${lib}_Ath_R60.unsorted.bam" -o "$hisat2_dir/${lib}_Ath_R60.sorted.bam"
 
         # Crear índice .bai para el archivo BAM
-      #  echo "Creando índice BAI para el archivo BAM..."
-      #  samtools index "$hisat2_dir/${lib}_Ath_R60.sorted.bam"
-   # fi
-#done
+        echo "Creando índice BAI para el archivo BAM..."
+        samtools index "$hisat2_dir/${lib}_Ath_R60.sorted.bam"
+    fi
+done
 
 # Fusionar BAMs por muestra (agrupar réplicas técnicas) y calcular media de reads mapeadas
-#echo "Fusionando réplicas técnicas de Arabidopsis y calculando media de reads mapeadas..."
-#declare -A sample_bams
-#for bam in $hisat2_dir/*_Ath_R60.sorted.bam; do
- #   sample_name=$(basename "$bam" | cut -d'_' -f1)  # Extraer el identificador base
-  #  sample_bams[$sample_name]="${sample_bams[$sample_name]} $bam"
-#done
+echo "Fusionando réplicas técnicas de Arabidopsis y calculando media de reads mapeadas..."
+declare -A sample_bams
+for bam in $hisat2_dir/*_Ath_R60.sorted.bam; do
+    sample_name=$(basename "$bam" | cut -d'_' -f1)  # Extraer el identificador base
+    sample_bams[$sample_name]="${sample_bams[$sample_name]} $bam"
+done
 
-#for sample in "${!sample_bams[@]}"; do
- #   merged_bam="$hisat2_dir/${sample}_merged_Ath_R60.bam"
-  #  echo "Fusionando BAMs para $sample..."
-  #  samtools merge "$merged_bam" ${sample_bams[$sample]}
-  #  samtools index "$merged_bam"
-  #  samtools flagstat "$merged_bam" > "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt"
+for sample in "${!sample_bams[@]}"; do
+    merged_bam="$hisat2_dir/${sample}_merged_Ath_R60.bam"
+    echo "Fusionando BAMs para $sample..."
+    samtools merge "$merged_bam" ${sample_bams[$sample]}
+    samtools index "$merged_bam"
+    samtools flagstat "$merged_bam" > "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt"
     
     # Extraer porcentaje de reads mapeadas y calcular media
-  #  mapped_reads=$(grep "properly paired" "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt" | awk '{print $1}')
-  #  total_reads=$(grep "in total" "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt" | awk '{print $1}')
-  #  percentage=$(echo "scale=2; ($mapped_reads/$total_reads)*100" | bc)
-  #  echo "$sample $percentage" >> "$hisat2_dir/Ath_mapped_percentages.txt"
-#done
+    mapped_reads=$(grep "properly paired" "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt" | awk '{print $1}')
+    total_reads=$(grep "in total" "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt" | awk '{print $1}')
+    percentage=$(echo "scale=2; ($mapped_reads/$total_reads)*100" | bc)
+    echo "$sample $percentage" >> "$hisat2_dir/Ath_mapped_percentages.txt"
+done
 
 # Fusionar todos los BAMs de Arabidopsis en un solo archivo
-#echo "Fusionando todos los BAMs de Arabidopsis en un solo archivo..."
-#samtools merge "$hisat2_dir/All_Ath_R60.bam" $hisat2_dir/*_merged_Ath_R60.bam
-#samtools index "$hisat2_dir/All_Ath_R60.bam"
+echo "Fusionando todos los BAMs de Arabidopsis en un solo archivo..."
+samtools merge "$hisat2_dir/All_Ath_R60.bam" $hisat2_dir/*_merged_Ath_R60.bam
+samtools index "$hisat2_dir/All_Ath_R60.bam"
      
 
 # Mapeo para el genoma del virus TuMV
-#echo "Mapeando las lecturas al genoma de TuMV..."
-#for lib in "${libs[@]}"; do
- #   folder=$(echo "$lib" | cut -d'_' -f1)
+echo "Mapeando las lecturas al genoma de TuMV..."
+for lib in "${libs[@]}"; do
+    folder=$(echo "$lib" | cut -d'_' -f1)
 
-#    if [[ -f "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" && -f "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" ]]; then
- #       echo "Mapeando $lib desde carpeta $folder"
-  #      hisat2 -x $hisat2_dir/TuMV_genome \
-  #             -1 "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" \
-   #            -2 "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" \
-    #           -S "$virus_stats_dir/${lib}_TuMV.sam" \
-     #          -p 8 
+    if [[ -f "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" && -f "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" ]]; then
+        echo "Mapeando $lib desde carpeta $folder"
+        hisat2 -x $hisat2_dir/TuMV_genome \
+               -1 "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" \
+               -2 "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" \
+               -S "$virus_stats_dir/${lib}_TuMV.sam" \
+               -p 8 
 
         # Convertir SAM a BAM
-  #      echo "Convirtiendo archivo SAM a BAM..."
-  #      samtools view -bS "$virus_stats_dir/${lib}_TuMV.sam" > "$virus_stats_dir/${lib}_TuMV.unsorted.bam"
+        echo "Convirtiendo archivo SAM a BAM..."
+        samtools view -bS "$virus_stats_dir/${lib}_TuMV.sam" > "$virus_stats_dir/${lib}_TuMV.unsorted.bam"
 
         # Ordenar archivo BAM
-   #     echo "Ordenando archivo BAM..."
-    #    samtools sort "$virus_stats_dir/${lib}_TuMV.unsorted.bam" -o "$virus_stats_dir/${lib}_TuMV.sorted.bam"
+        echo "Ordenando archivo BAM..."
+        samtools sort "$virus_stats_dir/${lib}_TuMV.unsorted.bam" -o "$virus_stats_dir/${lib}_TuMV.sorted.bam"
 
         # Crear índice .bai para el archivo BAM
-     #   echo "Creando índice BAI para el archivo BAM..."
-     #   samtools index "$virus_stats_dir/${lib}_TuMV.sorted.bam"
-   # fi
-#done
+        echo "Creando índice BAI para el archivo BAM..."
+        samtools index "$virus_stats_dir/${lib}_TuMV.sorted.bam"
+    fi
+done
 
 # Fusionar BAMs de TuMV por muestra y calcular media de reads mapeadas
-#echo "Fusionando réplicas técnicas de TuMV y calculando media de reads mapeadas..."
-#declare -A sample_bams_virus
-#for bam in $virus_stats_dir/*_TuMV.sorted.bam; do
- #   sample_name=$(basename "$bam" | cut -d'_' -f1)  # Extraer el identificador base
- #   sample_bams_virus[$sample_name]="${sample_bams_virus[$sample_name]} $bam"
-#done
+echo "Fusionando réplicas técnicas de TuMV y calculando media de reads mapeadas..."
+declare -A sample_bams_virus
+for bam in $virus_stats_dir/*_TuMV.sorted.bam; do
+    sample_name=$(basename "$bam" | cut -d'_' -f1)  # Extraer el identificador base
+    sample_bams_virus[$sample_name]="${sample_bams_virus[$sample_name]} $bam"
+done
 
-#for sample in "${!sample_bams_virus[@]}"; do
- #   merged_bam="$virus_stats_dir/${sample}_merged_TuMV.bam"
- #   echo "Fusionando BAMs para $sample..."
- #   samtools merge "$merged_bam" ${sample_bams_virus[$sample]}
- #   samtools index "$merged_bam"
- #   samtools flagstat "$merged_bam" > "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt"
+for sample in "${!sample_bams_virus[@]}"; do
+    merged_bam="$virus_stats_dir/${sample}_merged_TuMV.bam"
+    echo "Fusionando BAMs para $sample..."
+    samtools merge "$merged_bam" ${sample_bams_virus[$sample]}
+    samtools index "$merged_bam"
+    samtools flagstat "$merged_bam" > "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt"
     
     # Extraer porcentaje de reads mapeadas y calcular media
- #   mapped_reads=$(grep "properly paired" "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt" | awk '{print $1}')
- #   total_reads=$(grep "in total" "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt" | awk '{print $1}')
- #   percentage=$(echo "scale=2; ($mapped_reads/$total_reads)*100" | bc)
- #   echo "$sample $percentage" >> "$virus_stats_dir/TuMV_mapped_percentages.txt"
-#done
+    mapped_reads=$(grep "properly paired" "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt" | awk '{print $1}')
+    total_reads=$(grep "in total" "$virus_stats_dir/${sample}_merged_TuMV.flagstat.txt" | awk '{print $1}')
+    percentage=$(echo "scale=2; ($mapped_reads/$total_reads)*100" | bc)
+    echo "$sample $percentage" >> "$virus_stats_dir/TuMV_mapped_percentages.txt"#done
 
 # Fusionar todos los BAMs de TuMV en un solo archivo
-#echo "Fusionando todos los BAMs de TuMV en un solo archivo..."
-#samtools merge "$virus_stats_dir/All_TuMV.bam" $virus_stats_dir/*_merged_TuMV.bam
-#samtools index "$virus_stats_dir/All_TuMV.bam"
+echo "Fusionando todos los BAMs de TuMV en un solo archivo..."
+samtools merge "$virus_stats_dir/All_TuMV.bam" $virus_stats_dir/*_merged_TuMV.bam
+samtools index "$virus_stats_dir/All_TuMV.bam"
 
 # Generar gráfico con gnuplot
 echo "Generando gráfico de porcentaje de virus en muestras..."
