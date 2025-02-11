@@ -1,6 +1,4 @@
 #!/bin/bash
-SBATCH --mem=32G
-
 # Lista de archivos BAM
 bam_files=(
     AI1_merged_Ath_R60.bam AI2_merged_Ath_R60.bam AI3_merged_Ath_R60.bam
