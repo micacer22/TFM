@@ -13,7 +13,7 @@ bam_files=(
 )
 
 # Archivo de anotaciones
-annotation="Annotations/atRTD3_TS_21Feb22_transfix.gtf"
+annotation="/home/cacermi/miriam/2024/TFM/Data/X204SC24104429-Z01-F001/Annotation"
 
 # Lista de genes de interés
 genes=("AT2G31650" "AT1G77300" "AT2G23380") # ATX1, SDG8, CLF
