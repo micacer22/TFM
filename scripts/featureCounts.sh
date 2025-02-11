@@ -26,7 +26,7 @@ featureCounts -a "$annotation" \
               -o counts_genes.txt \
               -T 8 \
               -s 0 \
-              -p \ # Paired-end
+              -p \
               -t exon \
               -g gene_id \
               "${bam_files[@]}"
