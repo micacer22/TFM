@@ -214,8 +214,9 @@ for sample in "${!sample_bams[@]}"; do
     merged_bam="$hisat2_dir/${sample}_merged_Ath_R60.bam"
     echo "Fusionando BAMs para $sample..."
     samtools merge "$merged_bam" ${sample_bams[$sample]}
-    samtools index "$merged_bam"
-    samtools flagstat "$merged_bam" > "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt"
+    samtools sort -o "$sorted_bam" "$merged_bam"
+    samtools index "$sorted_bam"
+    samtools flagstat "$sorted_bam" > "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt"
     
     # Extraer porcentaje de reads mapeadas y calcular media
     mapped_reads=$(grep "properly paired" "$hisat2_dir/${sample}_merged_Ath_R60.flagstat.txt" | awk '{print $1}')
