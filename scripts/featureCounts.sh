@@ -1,14 +1,14 @@
 #!/bin/bash
 # Lista de archivos BAM
 bam_files=(
-    AI1_merged_Ath_R60.bam AI2_merged_Ath_R60.bam AI3_merged_Ath_R60.bam
-    AM1_merged_Ath_R60.bam AM2_merged_Ath_R60.bam AM3_merged_Ath_R60.bam
-    CI1_merged_Ath_R60.bam CI2_merged_Ath_R60.bam CI3_merged_Ath_R60.bam
-    CM1_merged_Ath_R60.bam CM2_merged_Ath_R60.bam CM3_merged_Ath_R60.bam
-    SI1_merged_Ath_R60.bam SI2_merged_Ath_R60.bam SI3_merged_Ath_R60.bam
-    SM1_merged_Ath_R60.bam SM2_merged_Ath_R60.bam SM3_merged_Ath_R60.bam
-    WI1_merged_Ath_R60.bam WI2_merged_Ath_R60.bam WI3_merged_Ath_R60.bam
-    WM1_merged_Ath_R60.bam WM2_merged_Ath_R60.bam WM3_merged_Ath_R60.bam
+    AI1_merged_Ath_R60.sorted.bam AI2_merged_Ath_R60.sorted.bam AI3_merged_Ath_R60.sorted.bam
+    AM1_merged_Ath_R60.sorted.bam AM2_merged_Ath_R60.sorted.bam AM3_merged_Ath_R60.sorted.bam
+    CI1_merged_Ath_R60.sorted.bam CI2_merged_Ath_R60.sorted.bam CI3_merged_Ath_R60.sorted.bam
+    CM1_merged_Ath_R60.sorted.bam CM2_merged_Ath_R60.sorted.bam CM3_merged_Ath_R60.sorted.bam
+    SI1_merged_Ath_R60.sorted.bam SI2_merged_Ath_R60.sorted.bam SI3_merged_Ath_R60.sorted.bam
+    SM1_merged_Ath_R60.sorted.bam SM2_merged_Ath_R60.sorted.bam SM3_merged_Ath_R60.sorted.bam
+    WI1_merged_Ath_R60.sorted.bam WI2_merged_Ath_R60.sorted.bam WI3_merged_Ath_R60.sorted.bam
+    WM1_merged_Ath_R60.sorted.bam WM2_merged_Ath_R60.sorted.bam WM3_merged_Ath_R60.sorted.bam
 )
 
 # Archivo de anotaciones
