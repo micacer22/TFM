@@ -20,15 +20,18 @@ genes=("AT2G31650" "AT1G77300" "AT2G23380") # ATX1, SDG8, CLF
 # Archivo de salida
 output_file="counts_genes_filtered.txt"
 
-# Ejecutar featureCounts en todos los archivos BAM
 featureCounts -a "$annotation" \
               -o counts_genes.txt \
               -T 8 \
               -s 0 \
               -p \
+              --countReadPairs \
+              -B \
+              -C \
               -t exon \
               -g gene_id \
               "${bam_files[@]}"
+
 
 # Filtrar los genes de interés y guardar en un nuevo archivo
 grep -E "$(IFS="|"; echo "${genes[*]}")" counts_genes.txt > "$output_file"
