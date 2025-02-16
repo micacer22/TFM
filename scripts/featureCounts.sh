@@ -26,8 +26,6 @@ featureCounts -a "$annotation" \
               -s 0 \
               -p \
               --countReadPairs \
-              -B \
-              -C \
               -t exon \
               -g gene_id \
               "${bam_files[@]}"
