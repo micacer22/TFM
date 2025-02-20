@@ -1,17 +1,13 @@
+# Instalar pheatmap
+#install.packages("pheatmap") # Descomentar si no está instalado
+
 # Cargar librerías necesarias
 library(DESeq2)
 library(tidyverse)
 library(conflicted)
-# Instalar pheatmap si no está instalado
-install.packages("pheatmap")
-# Cargar la librería necesaria
 library(gplots)
 library(RColorBrewer)
-
-
-# Cargar la librería
 library(pheatmap)
-
 
 # Cargar los datos de expresión
 counts_data <- read.delim("/Users/miriamcaballerocervero/Desktop/counts_DESeq2_ready.txt",
@@ -86,7 +82,7 @@ norm_counts <- assay(rld)
 # Seleccionar los genes más variables
 # Usamos la varianza de cada gen para seleccionar los que más varían entre las muestras
 variances <- apply(norm_counts, 1, var)
-top_genes <- order(variances, decreasing = TRUE)[1:100]  # Seleccionamos los 50 genes con mayor varianza
+top_genes <- order(variances, decreasing = TRUE)[1:100]  # Seleccionamos los 100 genes con mayor varianza
 
 # Subconjunto de los datos normalizados para los genes más variables
 norm_counts_top_genes <- norm_counts[top_genes, ]
