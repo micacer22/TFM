@@ -29,7 +29,7 @@ if (!identical(colnames(counts_data), rownames(metadata))) {
   stop("Los nombres de las muestras en counts_data y metadata no están alineados.")
 }
 
-# 🔹 Filtrar solo las condiciones de interés
+# Filtrar solo las condiciones de interés
 metadata_filtered <- metadata %>% 
   filter(condition %in% c("WT_mock", "WT_infected", "sdg8_mock", "sdg8_infected", "atx1_mock", "atx1_infected", "clf_mock", "clf_infected"))
 
@@ -43,7 +43,7 @@ if (!identical(colnames(counts_data_filtered), rownames(metadata_filtered))) {
   stop("Los nombres de las muestras en counts_data y metadata no están alineados.")
 }
 
-# 🔹 Crear objeto DESeqDataSet
+# Crear objeto DESeqDataSet
 dds <- DESeqDataSetFromMatrix(countData = counts_data_filtered, 
                               colData = metadata_filtered, 
                               design = ~ condition)
@@ -59,7 +59,7 @@ comparar_condiciones <- function(grupo1, grupo2, nombre_archivo) {
   write.csv(as.data.frame(res), nombre_archivo)
 }
 
-# 🔹 Realizar comparaciones y guardar resultados
+# Realizar comparaciones y guardar resultados
 comparar_condiciones("WT_mock", "WT_infected", "DESeq2_results_WT_mock_vs_WT_infected.csv")
 
 comparar_condiciones("sdg8_mock", "sdg8_infected", "DESeq2_results_sdg8_mock_vs_sdg8_infected.csv")
@@ -74,31 +74,31 @@ comparar_condiciones("WT_infected", "sdg8_infected", "DESeq2_results_WT_infected
 comparar_condiciones("WT_infected", "clf_infected", "DESeq2_results_WT_infected_vs_clf_infected.csv")
 comparar_condiciones("WT_infected", "atx1_infected", "DESeq2_results_WT_infected_vs_atx1_infected.csv")
 
-# 🔹 Guardar datos normalizados
+# Guardar datos normalizados
 rld <- rlog(dds, blind = TRUE)
 write.csv(assay(rld), "normalized_counts.csv")
 
-# 🔹 PCA Plot
-pca_plot <- plotPCA(rld, intgroup = "condition") + theme_minimal()
-ggsave("PCA_plot.pdf", pca_plot)
+# PCA Plot
+#pca_plot <- plotPCA(rld, intgroup = "condition") + theme_minimal()
+#ggsave("PCA_plot.pdf", pca_plot)
 
-# 🔹 Heatmap de los 100 genes más variables
-norm_counts <- assay(rld)
-variances <- apply(norm_counts, 1, var)
-top_genes <- order(variances, decreasing = TRUE)[1:100]
-norm_counts_top_genes <- norm_counts[top_genes, ]
+# Heatmap de los 100 genes más variables
+#norm_counts <- assay(rld)
+#variances <- apply(norm_counts, 1, var)
+#top_genes <- order(variances, decreasing = TRUE)[1:100]
+#norm_counts_top_genes <- norm_counts[top_genes, ]
 
-pdf("Heatmap.pdf", height = 12)
-pheatmap(norm_counts_top_genes, 
-         scale = "row", 
-         clustering_distance_rows = "euclidean", 
-         clustering_distance_cols = "euclidean", 
-         clustering_method = "complete", 
-         annotation_col = metadata_filtered[, "condition", drop = FALSE], 
-         main = "Heatmap of the 100 most variable genes")
-dev.off()
+#pdf("Heatmap.pdf", height = 12)
+#pheatmap(norm_counts_top_genes, 
+         #scale = "row", 
+         #clustering_distance_rows = "euclidean", 
+         #clustering_distance_cols = "euclidean", 
+         #clustering_method = "complete", 
+         #annotation_col = metadata_filtered[, "condition", drop = FALSE], 
+         #main = "Heatmap of the 100 most variable genes")
+#dev.off()
 
-# 🔹 Volcano Plot para cada comparación
+# Volcano Plot para cada comparación
 crear_volcano_plot <- function(archivo_csv, nombre_pdf, titulo) {
   res <- read.csv(archivo_csv, row.names = 1)
   enhanced_volcano_plot <- EnhancedVolcano(res,
@@ -125,11 +125,11 @@ crear_volcano_plot("DESeq2_results_WT_infected_vs_sdg8_infected.csv", "Volcano_W
 crear_volcano_plot("DESeq2_results_WT_infected_vs_atx1_infected.csv", "Volcano_WT_infected_vs_atx1_infected.pdf", "WT Infected vs atx1 Infected")
 crear_volcano_plot("DESeq2_results_WT_infected_vs_clf_infected.csv", "Volcano_WT_infected_vs_clf_infected.pdf", "WT Infected vs clf Infected")
 
-# 🔹 Dendrograma de clustering
-pdf("Dendrogram.pdf")
-dist_matrix <- dist(t(norm_counts))
-hc <- hclust(dist_matrix, method = "complete")
-plot(hc, main = "Clustering Dendrogram", xlab = "", sub = "")
-dev.off()
+# Dendrograma de clustering
+#pdf("Dendrogram.pdf")
+#dist_matrix <- dist(t(norm_counts))
+#hc <- hclust(dist_matrix, method = "complete")
+#plot(hc, main = "Clustering Dendrogram", xlab = "", sub = "")
+#dev.off()
 
 print("Análisis DESeq2 completado con éxito.")
