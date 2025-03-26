@@ -1,4 +1,4 @@
-# Instalar paquetes si no están instalados
+# Instalar paquetes
 #if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 #if (!requireNamespace("DESeq2", quietly = TRUE)) BiocManager::install("DESeq2")
 
@@ -7,7 +7,7 @@
 #install.packages("EnhancedVolcano")
 setwd("/Users/miriamcaballerocervero/Documents/Miriam/24-25/TFM/Gráficas_Expr_Dif/Comparaciones")
 
-# Cargar librerías necesarias
+# Cargar librerías 
 library(DESeq2)
 library(tidyverse)
 library(pheatmap)
@@ -85,7 +85,7 @@ for (comp in comparaciones) {
   comparar_condiciones(comp[1], comp[2], comp[3])
 }
 
-# 🔹 Guardar datos normalizados
+# Guardar datos normalizados
 rld <- rlog(dds, blind = TRUE)
 write.csv(assay(rld), "normalized_counts.csv")
 
@@ -126,7 +126,7 @@ for (comp in comparaciones) {
 print(df_counts)
 
 # --- Graficar los conteos con ggplot2 en barras apiladas ---
-# Reordena para que Down sea el primer nivel (abajo) y Up el segundo (arriba)
+# Down es el primer nivel (abajo) y Up el segundo (arriba)
 df_counts$Regulation <- factor(df_counts$Regulation, levels = c("Down", "Up"))
 
 p <- ggplot(df_counts, aes(x = Comparacion, y = Count, fill = Regulation)) +
@@ -145,11 +145,11 @@ print(p)
 ggsave("Grafica_DEGs.png", plot = p, width = 8, height = 6, dpi = 300)  # Guardar como PNG
 ggsave("Grafica_DEGs.pdf", plot = p, width = 8, height = 6)  # Guardar como PDF
 
-# 🔹 PCA Plot
+# PCA Plot
 pca_plot <- plotPCA(rld, intgroup = "condition") + theme_minimal()
 ggsave("PCA_plot.pdf", pca_plot)
 
-# 🔹 Heatmap de los 100 genes más variables
+# Heatmap de los 100 genes más variables
 norm_counts <- assay(rld)
 variances <- apply(norm_counts, 1, var)
 top_genes <- order(variances, decreasing = TRUE)[1:100]
@@ -165,7 +165,7 @@ pheatmap(norm_counts_top_genes,
          main = "Heatmap of the 100 most variable genes")
 dev.off()
 
-# 🔹 Volcano Plot para cada comparación
+# Volcano Plot para cada comparación
 crear_volcano_plot <- function(archivo_csv, nombre_pdf, titulo) {
   res <- read.csv(archivo_csv, row.names = 1)
   enhanced_volcano_plot <- EnhancedVolcano(res,
@@ -191,7 +191,7 @@ crear_volcano_plot("DESeq2_results_sdg8_infected_primed.csv", "Volcano_WT_infect
 crear_volcano_plot("DESeq2_results_clf_infected_primed.csv", "Volcano_WT_infected_vs_clf_infected.pdf", "WT Infected vs clf Infected")
 crear_volcano_plot("DESeq2_results_atx1_infected_primed.csv", "Volcano_WT_infected_vs_atx1_infected.pdf", "WT Infected vs atx1 Infected")
 
-# 🔹 Dendrograma de clustering
+# Dendrograma de clustering
 pdf("Dendrogram.pdf")
 dist_matrix <- dist(t(norm_counts))
 hc <- hclust(dist_matrix, method = "complete")
