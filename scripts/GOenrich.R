@@ -1,7 +1,7 @@
 # ----------------------------------------------------------------------------
-# 1) PREPARACIÓN: librerías y lista de comparaciones
+# 1) Librerías y lista de comparaciones
 # ----------------------------------------------------------------------------
-# Instalar paquetes si no están instalados (descomentar si te hace falta)
+# Instalar paquetes
 # if (!requireNamespace("BiocManager", quietly = TRUE)) install.packages("BiocManager")
 # BiocManager::install("DESeq2")
 # install.packages("biomartr")
@@ -17,13 +17,10 @@ library(clusterProfiler)
 library(org.At.tair.db)
 library(gridExtra)  # Para arrange de plots
 
-# Ajustar directorio de trabajo según corresponda
+# Directorio de trabajo 
 setwd("/Users/miriamcaballerocervero/Documents/Miriam/24-25/TFM/Gráficas_Expr_Dif/Comparaciones")
 
-# Ya generaste los archivos CSV de DESeq2 en esta carpeta.
-# Ahora, solo necesitas leerlos y hacer el enriquecimiento GO.
-
-# Lista de comparaciones con nombres de archivos (cada sublista tiene un solo elemento)
+# Lista de comparaciones
 comparaciones <- list(
   c("DESeq2_results_WT_responsive.csv"),
   c("DESeq2_results_sdg8_responsive.csv"),
@@ -38,7 +35,7 @@ comparaciones <- list(
 )
 
 # ----------------------------------------------------------------------------
-# 2) DEFINIR FUNCIÓN DE ENRIQUECIMIENTO GO
+# 2) FUNCIÓN DE ENRIQUECIMIENTO GO
 # ----------------------------------------------------------------------------
 # Esta función:
 #  - Lee un archivo CSV con resultados DESeq2 (con columna "X" = geneID),
@@ -52,16 +49,16 @@ enriquecer_comparacion <- function(csv_file, out_prefix = "GO") {
   # Leer resultados DESeq2
   res <- read.csv(csv_file, header = TRUE)
   
-  # 1) Define el cutoff de significancia
+  # 1) Definir el cutoff de significancia
   padj_cutoff <- 0.05
   
-  # 2) Filtra genes Up (log2FoldChange > 0) con padj <= 0.05
+  # 2) Filtrar genes Up (log2FoldChange > 0) con padj <= 0.05
   genes_up <- unique(as.character(
     res$X[res$padj <= padj_cutoff & res$log2FoldChange > 0],
     na.rm = TRUE
   ))
   
-  # 3) Filtra genes Down (log2FoldChange < 0) con padj <= 0.05
+  # 3) Filtrar genes Down (log2FoldChange < 0) con padj <= 0.05
   genes_down <- unique(as.character(
     res$X[res$padj <= padj_cutoff & res$log2FoldChange < 0],
     na.rm = TRUE
@@ -71,8 +68,7 @@ enriquecer_comparacion <- function(csv_file, out_prefix = "GO") {
   cat("Número de genes Up   =", length(genes_up), "\n")
   cat("Número de genes Down =", length(genes_down), "\n")
   
-  # 4) Definir el universo de genes (todos los presentes en el CSV)
-  #    Si deseas, puedes usar rownames(dds) u otra lista más completa.
+  # 4) Definir todos los genes presentes en el CSV
   all_genes <- as.character(res$X)
   
   # 5) Anotar con biomartr (IDs ENTREZ)
@@ -153,11 +149,10 @@ enriquecer_comparacion <- function(csv_file, out_prefix = "GO") {
 resultados_enriquecimiento <- list()
 
 for (comp in comparaciones) {
-  # Aquí, comp es algo como c("DESeq2_results_WT_responsive.csv")
   # comp[[1]] extrae la cadena "DESeq2_results_WT_responsive.csv"
   archivo_csv <- comp[[1]]
   
-  # Crear un nombre identificativo
+  # Crear un nombre 
   nombre_corto <- gsub("^DESeq2_results_", "", archivo_csv)
   nombre_corto <- gsub("\\.csv$", "", nombre_corto)
   
@@ -166,89 +161,12 @@ for (comp in comparaciones) {
   
   # Guardar en la lista
   resultados_enriquecimiento[[nombre_corto]] <- res_go
-  
-  # (Opcional) Exportar cada tabla a CSV
-  # write.csv(res_go$BP_up,   paste0("GO_BP_up_",   nombre_corto, ".csv"), row.names = FALSE)
-  # write.csv(res_go$BP_down, paste0("GO_BP_down_", nombre_corto, ".csv"), row.names = FALSE)
-  # ...
 }
 
 # ----------------------------------------------------------------------------
-# 4) EJEMPLO DE VISUALIZACIÓN
-# ----------------------------------------------------------------------------
-# ----------------------------------------------------------------------------
-# Suponiendo que tu objeto 'resultados_enriquecimiento' tiene la forma:
-# resultados_enriquecimiento[["WT_responsive"]]$BP_up
-# resultados_enriquecimiento[["WT_responsive"]]$BP_down
-# resultados_enriquecimiento[["WT_responsive"]]$CC_up
-# ...
-# Y así para cada comparación (WT_responsive, sdg8_responsive, etc.).
+# 4) VISUALIZACIÓN
 # ----------------------------------------------------------------------------
 
-# 1) Definimos una función auxiliar para crear y guardar el dotplot
-#plot_enrichment_dotplot <- function(df_enrich, comp_name, sub_name) {
-  # Filtramos términos con p.adjust < 0.05
-  #df_sig <- subset(df_enrich, p.adjust < 0.05)
-  
-  # Si no hay términos significativos, avisamos y salimos
-  #if (nrow(df_sig) == 0) {
-   # cat("Sin términos significativos (p.adjust < 0.05) para", sub_name, "en", comp_name, "\n")
-   # return(NULL)
-  #}
-  
-  # Creamos el gráfico
- # p <- ggplot(df_sig, aes(x = Count, y = reorder(Description, Count))) +
-    #geom_point(aes(size = Count, color = p.adjust)) +
-   # scale_color_gradient(low = "red", high = "yellow") +
-   # theme_minimal() +
-   # labs(
-     # title = paste(sub_name, "-", comp_name),
-   #   x     = "Gene Count",
-    #  y     = "GO Term",
-   #   color = "p.adjust",
-   #   size  = "Gene Count"
-   # )
-  
-  # Nombre de archivo, por ejemplo: "dotplot_BP_up_WT_responsive.pdf"
-  #file_name <- paste0("dotplot_", sub_name, "_", comp_name, ".pdf")
- # ggsave(file_name, p)
-  
-  # Retornamos el objeto ggplot por si quieres manipularlo en R
-  #return(p)
-#}
-
-# 2) Generamos los dotplots para cada comparación y cada subcategoría
-#    (BP_up, BP_down, CC_up, CC_down, MF_up, MF_down) de tu lista.
-
-# Vector con los nombres de sub-listas que tienes en cada comparación
-#ontologias <- c("BP_up", "BP_down", "CC_up", "CC_down", "MF_up", "MF_down")
-
-# Iterar sobre cada comparación en 'resultados_enriquecimiento'
-#for (comp_name in names(resultados_enriquecimiento)) {
-  
- # cat("\nProcesando comparación:", comp_name, "\n")
-  
-  # Extraer la lista de enriquecimiento para esta comparación
- # sub_res <- resultados_enriquecimiento[[comp_name]]
-  
-  # Iterar sobre cada ontología/dirección (BP_up, BP_down, etc.)
-#  for (ont_name in ontologias) {
-  #  if (!ont_name %in% names(sub_res)) {
- #     cat("No existe", ont_name, "en la comparación", comp_name, "\n")
- #     next
-  #  }
-    
-    # Extraer el data frame de enriquecimiento
-  #  df_enrich <- sub_res[[ont_name]]
-    
-    # Generar y guardar el dotplot
-   # plot_enrichment_dotplot(df_enrich, comp_name, ont_name)
- # }
-#}
-
-# ----------------------------------------------------------------------------
-# 4) VISUALIZACIÓN: GRÁFICO COMBINADO (Up y Down en dos columnas)
-# ----------------------------------------------------------------------------
 plot_combined_dotplot <- function(df_up, df_down, comp_name, ontologia, top_n = NULL) {
   # Procesamiento de df_up y df_down
   if (!is.null(df_up) && nrow(df_up) > 0 && "p.adjust" %in% colnames(df_up)) {
@@ -288,7 +206,7 @@ plot_combined_dotplot <- function(df_up, df_down, comp_name, ontologia, top_n = 
   
   df_combined$Description <- str_wrap(df_combined$Description, width = 40)
   
-  # Ordenar los GO terms por Count descendente (los de mayor Count aparecerán primero)
+  # Ordenar los GO terms por Count descendente 
   df_order <- df_combined %>%
     dplyr::group_by(Description) %>%
     dplyr::summarise(max_Count = max(Count, na.rm = TRUE)) %>%
@@ -313,7 +231,7 @@ plot_combined_dotplot <- function(df_up, df_down, comp_name, ontologia, top_n = 
     theme(
       axis.text.x = element_blank(),
       axis.ticks.x = element_blank(),
-      # Reducir el espacio entre paneles y márgenes para disminuir el espacio en blanco
+      # Reducir el espacio entre paneles y márgenes
       panel.spacing = unit(0.1, "lines"),
       plot.margin = unit(c(0.5, 0.5, 0.5, 0.5), "lines"),
       plot.title = element_text(face = "bold", size = 14, hjust = 0.5),
@@ -322,7 +240,7 @@ plot_combined_dotplot <- function(df_up, df_down, comp_name, ontologia, top_n = 
       legend.title = element_text(size = 10)
     )
   
-  # Aumentar la altura para que la gráfica sea más larga y se use mejor el espacio
+  # Aumentar la altura para que la gráfica sea más larga
   file_name <- paste0("dotplot_combined_", ontologia, "_", comp_name, 
                       ifelse(is.null(top_n), "_all", paste0("_top", top_n)), ".pdf")
   ggsave(file_name, p, width = 7, height = 14)
