@@ -182,7 +182,7 @@ for lib in "${libs[@]}"; do
         echo "Mapeando $lib desde carpeta $folder"
         
         # Ejecutar hisat2 con el número de hilos especificado
-        hisat2 -x $hisat2_dir/Ath_R56 \
+        hisat2 -x $hisat2_dir/Ath_R60 \
                -1 "$trimmed_dir/$folder/${lib}_1_val_1.fq.gz" \
                -2 "$trimmed_dir/$folder/${lib}_2_val_2.fq.gz" \
                -S "$hisat2_dir/${lib}_Ath_R60.sam" \
